@@ -1,6 +1,7 @@
 # LA-YOLO26 可迁移实验包
 
-本目录是基于 Ultralytics 改造后的 LA-YOLO26 训练实验包，用于支撑 LKYWDetection 论文实验。该包已裁剪掉官方仓库中与本实验无关的文档、测试和示例内容，只保留模型代码、实验配置、数据集 YAML、训练脚本、数据集和预训练权重，方便直接拷贝到其他电脑运行。
+本目录是基于 Ultralytics 改造后的 LA-YOLO26 训练实验包，用于支撑 LKYWDetection 论文实验。
+以下D:/CondaEnvs/yolov11_traffic_dev/python.exe改为自己的conda 环境的python.exe
 
 ## 目录结构
 
@@ -539,7 +540,7 @@ pc2：2 个任务，10 个 run，补表 4 的 M 尺度主对比，并产出后�
 pc3：6 个任务，30 个 run，补表 5 的 YOLO26M 阶段式消融：物理增强、STAL、Focal、ProgLoss、MuSGD。
 pc4：8 个任务，40 个 run，补表 5 的 no-AI/LA-YOLO26M/SFGA-Focal-FirePrior 消融，以及表 7 的 CarCrashDetection 迁移实验。
 
-Ext-VFSmoke 不属于四台电脑训练任务，它是训练完成后的表 6 外部验证任务，需要先补齐数据集后用 lkyw_validate.py 跑。
+Ext-VFSmoke是训练完成后的表 6 外部验证任务，需要先补齐数据集后用 lkyw_validate.py 跑。
 
 正式训练前建议先 dry-run：
 
