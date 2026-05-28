@@ -1,60 +1,60 @@
-# LA-YOLO26 Portable Experiment Package
+# LA-YOLO26 可迁移实验包
 
-This folder is a trimmed and portable Ultralytics-based training package for the LKYWDetection paper experiments. It keeps the modified model code, experiment plans, dataset YAML files, helper scripts, datasets, and pretrained weights needed to reproduce the LA-YOLO26 runs.
+本目录是基于 Ultralytics 改造后的 LA-YOLO26 训练实验包，用于支撑 LKYWDetection 论文实验。该包已裁剪掉官方仓库中与本实验无关的文档、测试和示例内容，只保留模型代码、实验配置、数据集 YAML、训练脚本、数据集和预训练权重，方便直接拷贝到其他电脑运行。
 
-## Package Layout
+## 目录结构
 
 ```text
 LAYOLO26/
-  ultralytics/                 # modified Ultralytics package
-    nn/modules/block.py        # SFGA and C3k2SFGA
-    nn/modules/__init__.py     # module exports
-    nn/tasks.py                # YAML parser support for new modules
-    utils/loss.py              # focal modulation, fire-state loss, ProgLoss switch
-    utils/tal.py               # STAL switch
-    cfg/default.yaml           # new hyperparameters
-    cfg/models/26/             # LA-YOLO26 model YAML files
+  ultralytics/                 # 已修改的 Ultralytics 主代码
+    nn/modules/block.py        # SFGA 与 C3k2SFGA 模块
+    nn/modules/__init__.py     # 新模块导出
+    nn/tasks.py                # 模型 YAML 解析链路支持新模块
+    utils/loss.py              # Focal 调制、火灾/无火状态优先损失、ProgLoss 开关
+    utils/tal.py               # STAL 开关
+    cfg/default.yaml           # 新增训练超参数
+    cfg/models/26/             # LA-YOLO26 模型配置
   tools/
-    lkyw_run.py                # grouped experiment launcher
-    lkyw_prepare_splits.py     # dataset validation and no-AI split generation
-    lkyw_collect_results.py    # result CSV aggregation
-    lkyw_validate.py           # external validation and fire/no-fire metrics
-    lkyw_dataset_stats.py      # dataset statistics for paper placeholders
+    lkyw_run.py                # 分组训练入口
+    lkyw_prepare_splits.py     # 数据集校验与 no-AI 划分生成
+    lkyw_collect_results.py    # 训练结果汇总
+    lkyw_validate.py           # 外部验证与火灾/无火状态指标计算
+    lkyw_dataset_stats.py      # 论文占位符所需的数据统计
   lkyw_experiments/
-    plans/paper_full.yaml      # complete paper experiment plan
-    datasets/*.yaml            # LKYWDetection, no-AI, Ext-VFSmoke, CarCrash YAMLs
-    manifests/ai_images.txt    # AI-assisted training image list
-    splits/*.txt               # generated train/val/test/no-AI splits
+    plans/paper_full.yaml      # 完整论文实验计划
+    datasets/*.yaml            # LKYWDetection、no-AI、Ext-VFSmoke、CarCrash 数据配置
+    manifests/ai_images.txt    # AI 辅助生成训练图像清单
+    splits/*.txt               # 已生成的 train/val/test/no-AI 划分文件
   datasets/
     LKYWDetection/
     CarCrashDetection/
-    Ext-VFSmoke/               # currently a placeholder until images/labels are added
-  weights/                     # YOLO11, YOLO26, YOLOv10 pretrained weights
-  runs/                        # generated after training
+    Ext-VFSmoke/               # 当前仍为空目录，需要后续补充图像和标签
+  weights/                     # YOLO11、YOLO26、YOLOv10 预训练权重
+  runs/                        # 训练后生成
 ```
 
-## Current Dataset Status
+## 当前数据集状态
 
-`LKYWDetection` is ready:
+`LKYWDetection` 已可直接训练：
 
 ```text
-train: 968 images, 968 labels, 988 boxes
-val:   277 images, 277 labels, 283 boxes
-test:  141 images, 141 labels, 142 boxes
-total: 1386 images, 1413 boxes
+train: 968 张图像，968 个标签文件，988 个目标框
+val:   277 张图像，277 个标签文件，283 个目标框
+test:  141 张图像，141 个标签文件，142 个目标框
+total: 1386 张图像，1413 个目标框
 ```
 
-The AI-assisted training manifest resolves 147 training images, so `lkyw_experiments/splits/train_noai.txt` contains 821 non-AI training images.
+AI 辅助训练图像清单已解析出 147 张训练图，因此 `lkyw_experiments/splits/train_noai.txt` 中包含 821 张非 AI 训练图，可用于 no-AI 消融实验。
 
-`CarCrashDetection` is ready:
+`CarCrashDetection` 已可直接运行迁移实验：
 
 ```text
-train: 5321 images, 5321 labels
-valid: 998 images, 998 labels
-test:  333 images, 333 labels
+train: 5321 张图像，5321 个标签文件
+valid: 998 张图像，998 个标签文件
+test:  333 张图像，333 个标签文件
 ```
 
-`Ext-VFSmoke` exists only as a directory placeholder. Add YOLO-format images and labels under:
+`Ext-VFSmoke` 目前只是占位目录，还没有实际图像和 YOLO 标签。后续应按下面结构补齐：
 
 ```text
 datasets/Ext-VFSmoke/images/test
@@ -63,17 +63,17 @@ datasets/Ext-VFSmoke/images/smoke
 datasets/Ext-VFSmoke/labels/smoke
 ```
 
-## Implementation Changes
+## 代码改动说明
 
-### 1. SFGA and C3k2SFGA
+### 1. 新增 SFGA 与 C3k2SFGA
 
-Files:
+文件位置：
 
 ```text
 ultralytics/nn/modules/block.py:1111
 ```
 
-Key code:
+关键代码：
 
 ```python
 class SFGA(nn.Module):
@@ -121,20 +121,20 @@ class C3k2SFGA(C3k2):
         return self.sfga(super().forward(x))
 ```
 
-Explanation:
+解释：
 
-SFGA is a lightweight neck attention module designed for vehicle fire and smoke scenes. It combines channel attention, spatial attention, and local edge-guided attention. The local edge branch uses the absolute difference between the feature map and a local average map, which emphasizes small flames, smoke boundaries, and high-contrast fire-like regions. `C3k2SFGA` keeps YOLO26's original `C3k2` structure and appends SFGA, making it easy to replace neck blocks without changing the detection head.
+SFGA 是面向车辆火灾、烟雾遮挡、小火焰目标设计的轻量注意力模块。它由通道注意力、空间注意力和局部边缘引导注意力组成。局部边缘分支通过特征图与局部均值图之间的绝对差异突出烟雾边缘、小火焰轮廓和强对比火焰区域。`C3k2SFGA` 保留 YOLO26 原有 `C3k2` 结构，仅在其输出后接入 SFGA，因此对检测头和主干结构的侵入较小，适合做消融对比。
 
-### 2. YAML Parsing Support for the New Modules
+### 2. YOLO26 模型解析链路支持新模块
 
-Files:
+文件位置：
 
 ```text
 ultralytics/nn/modules/__init__.py
 ultralytics/nn/tasks.py
 ```
 
-Export changes:
+模块导出：
 
 ```python
 from .block import (
@@ -150,7 +150,7 @@ __all__ = (
 )
 ```
 
-Parser changes:
+模型 YAML 解析注册：
 
 ```python
 base_modules = frozenset(
@@ -176,20 +176,20 @@ if m in frozenset({C3k2, C3k2SFGA}):  # for M/L/X sizes
         args[3] = True
 ```
 
-Explanation:
+解释：
 
-Ultralytics builds models by reading the model YAML and resolving module names through the task parser. Adding `SFGA` and `C3k2SFGA` to the export list and parser sets allows model YAML files such as `la-yolo26m.yaml` to instantiate these modules normally. Adding `C3k2SFGA` to `repeat_modules` preserves the standard depth scaling behavior, and treating it with `C3k2` keeps YOLO26's scale-specific `c3k` behavior for M/L/X variants.
+Ultralytics 通过读取模型 YAML 中的模块名来动态构建网络。如果只在 `block.py` 中写了新模块，但没有加入 `__init__.py` 和 `tasks.py` 的解析链路，模型 YAML 中的 `C3k2SFGA` 无法被识别。这里将 `SFGA` 与 `C3k2SFGA` 加入导出列表、基础模块集合和重复模块集合，使其能够参与深度缩放、通道缩放和重复次数解析。`C3k2SFGA` 与 `C3k2` 共用 M/L/X 规模下的 `c3k` 行为，保证新模块与 YOLO26 原有缩放逻辑一致。
 
-### 3. Focal Modulation and Fire/No-Fire Priority Loss
+### 3. 检测损失加入 Focal 调制与火灾/无火状态优先损失
 
-Files:
+文件位置：
 
 ```text
 ultralytics/utils/loss.py:369
 ultralytics/cfg/default.yaml:107
 ```
 
-Hyperparameter registration:
+新增超参数读取：
 
 ```python
 self.fl_gamma = float(getattr(h, "fl_gamma", 0.0) or 0.0)
@@ -199,7 +199,7 @@ self.fire_class_ids = [i for i in self._parse_class_ids(getattr(h, "fire_class_i
 self.nofire_class_ids = [i for i in self._parse_class_ids(getattr(h, "nofire_class_ids", "")) if 0 <= i < self.nc]
 ```
 
-Focal modulation:
+Focal 调制：
 
 ```python
 cls_target = target_scores.to(dtype)
@@ -214,7 +214,7 @@ if self.fl_gamma > 0:
     bce_loss = bce_loss * focal_weight
 ```
 
-Fire/no-fire state priority loss:
+火灾/无火状态优先损失：
 
 ```python
 if self.fire_prior > 0 and fg_mask.sum() and self.fire_class_ids and self.nofire_class_ids:
@@ -229,7 +229,7 @@ if self.fire_prior > 0 and fg_mask.sum() and self.fire_class_ids and self.nofire
     loss[1] = loss[1] + self.fire_prior * F.cross_entropy(state_logits, fire_target, reduction="mean")
 ```
 
-Default config:
+默认配置：
 
 ```yaml
 fl_gamma: 0.0
@@ -239,13 +239,13 @@ fire_class_ids: ""
 nofire_class_ids: ""
 ```
 
-Explanation:
+解释：
 
-Focal modulation is disabled by default because `fl_gamma=0.0`. When enabled, it down-weights easy examples and focuses the classification loss on hard or ambiguous samples. The fire/no-fire priority loss converts the four detection classes into two emergency states by aggregating logits with `logsumexp`. For LKYWDetection, fire classes are `0,2` and no-fire classes are `1,3`. This adds explicit semantic pressure against confusing fire and no-fire vehicle states.
+`fl_gamma=0.0` 时 Focal 调制关闭，默认不改变 YOLO26 的分类损失行为。开启后，Focal 调制会降低易分类样本对损失的贡献，使训练更关注难样本和边界模糊样本。火灾/无火状态优先损失将四分类检测结果进一步映射为“无火”和“有火”两个语义状态，通过 `logsumexp` 聚合同状态类别的 logits。对于 LKYWDetection，火灾类为 `0,2`，无火类为 `1,3`。该损失用于降低车辆火灾识别中“有火/无火”状态混淆的风险。
 
-### 4. STAL and ProgLoss Ablation Switches
+### 4. 为 STAL 与 ProgLoss 增加消融开关
 
-Files:
+文件位置：
 
 ```text
 ultralytics/cfg/default.yaml:33
@@ -254,14 +254,14 @@ ultralytics/utils/tal.py:40
 ultralytics/utils/loss.py:1225
 ```
 
-Default switches:
+默认开关：
 
 ```yaml
 stal: True
 prog_loss: True
 ```
 
-STAL is passed into the task-aligned assigner:
+STAL 传入任务对齐分配器：
 
 ```python
 self.assigner = TaskAlignedAssigner(
@@ -275,7 +275,7 @@ self.assigner = TaskAlignedAssigner(
 )
 ```
 
-STAL controls tiny-GT expansion in `TaskAlignedAssigner`:
+STAL 控制小目标 GT 扩张：
 
 ```python
 if self.small_target:
@@ -289,7 +289,7 @@ if self.small_target:
     gt_bboxes = xywh2xyxy(gt_bboxes_xywh)
 ```
 
-ProgLoss controls the one-to-many / one-to-one decay schedule:
+ProgLoss 控制一对多/一对一损失权重调度：
 
 ```python
 self.prog_loss = bool(getattr(model.args, "prog_loss", True))
@@ -302,13 +302,13 @@ def update(self) -> None:
     self.o2o = max(self.total - self.o2m, 0)
 ```
 
-Explanation:
+解释：
 
-The defaults keep YOLO26's official behavior: `stal=True` and `prog_loss=True`. The switches exist for ablation only. Setting `stal=False` disables small-target-aware label assignment expansion. Setting `prog_loss=False` freezes the one-to-many / one-to-one loss weights instead of applying the progressive schedule.
+默认值 `stal=True`、`prog_loss=True` 保持 YOLO26 官方行为不变。新增开关主要服务于论文消融实验：`stal=False` 用于关闭小目标感知标签分配扩张，`prog_loss=False` 用于关闭一对多/一对一损失的渐进式权重调度，使其权重保持固定。
 
-### 5. LA-YOLO26 Model YAML
+### 5. 新增 LA-YOLO26 模型配置
 
-Files:
+文件位置：
 
 ```text
 ultralytics/cfg/models/26/la-yolo26.yaml
@@ -317,7 +317,7 @@ ultralytics/cfg/models/26/la-yolo26s.yaml
 ultralytics/cfg/models/26/la-yolo26m.yaml
 ```
 
-Key YAML:
+关键 YAML：
 
 ```yaml
 nc: 4
@@ -340,13 +340,13 @@ head:
   - [[16, 19, 22], 1, Detect, [nc]]
 ```
 
-Explanation:
+解释：
 
-LA-YOLO26 keeps YOLO26's end-to-end detection head and inserts `C3k2SFGA` into the P3 and P4 neck branches. P3/8 is used for tiny flames and small smoke cues. P4/16 is used for medium-scale vehicle-smoke coupling. The copied `la-yolo26n/s/m.yaml` aliases make the experiment plan explicit and allow Ultralytics to infer the intended scale from the file name.
+LA-YOLO26 保留 YOLO26 的端到端检测头，并在颈部 P3 和 P4 分支引入 `C3k2SFGA`。P3/8 负责增强小火焰和细粒度烟雾线索，P4/16 负责增强车辆主体与烟雾、火焰之间的中尺度关联。`la-yolo26n/s/m.yaml` 是与共享结构一致的显式别名文件，便于实验计划中直接指定 N/S/M 三种规模，也便于 Ultralytics 根据文件名推断模型尺度。
 
-### 6. Experiment Plan, Dataset YAMLs, and Four-PC Grouping
+### 6. 新增完整实验计划、数据集 YAML 与四台电脑分组脚本
 
-Files:
+文件位置：
 
 ```text
 lkyw_experiments/plans/paper_full.yaml
@@ -358,7 +358,7 @@ lkyw_experiments/datasets/carcrash.yaml
 tools/lkyw_run.py
 ```
 
-Plan root:
+实验计划根配置：
 
 ```yaml
 workspace: "{repo}"
@@ -375,7 +375,7 @@ data:
 seeds: [0, 1, 42, 3407, 205]
 ```
 
-Full loss preset:
+完整损失预设：
 
 ```yaml
 full_loss:
@@ -386,7 +386,7 @@ full_loss:
   nofire_class_ids: "1,3"
 ```
 
-Dataset YAML example:
+数据集 YAML 示例：
 
 ```yaml
 train: ../../datasets/LKYWDetection/images/train
@@ -400,7 +400,7 @@ names:
   3: lkywNofire
 ```
 
-`lkyw_run.py` resolves the portable root and supports group selection:
+`lkyw_run.py` 负责解析可迁移根目录并按组选择实验：
 
 ```python
 REPO = Path(__file__).resolve().parents[1]
@@ -415,66 +415,72 @@ workspace = render(workspace_template, {"repo": repo_root})
 context = {"repo": repo_root, "workspace": Path(workspace).as_posix()}
 ```
 
-Explanation:
+解释：
 
-`paper_full.yaml` is the single experiment source of truth. It defines shared defaults, augmentation presets, loss presets, model/data paths, seeds, and experiment groups. `tools/lkyw_run.py` reads the plan, resolves all paths from the copied package root, and runs only the experiments whose `groups` match the selected computer.
+`paper_full.yaml` 是论文实验的统一配置入口，集中定义默认训练参数、数据增强预设、损失预设、模型路径、数据路径、随机种子和实验分组。`tools/lkyw_run.py` 读取该计划文件后，会以当前拷贝的 `LAYOLO26` 根目录作为 `{repo}`，自动解析权重、数据集和输出目录路径，并只运行所选 `--group` 对应的实验。
 
-Four-machine split:
+四台电脑分工：
 
-The default plan uses `seeds: [0, 1, 42, 3407, 205]`. The task count below means experiment definitions; actual run count is task count x 5. Use `--seed 0 --dry-run` for a quick check.
+默认每个实验都会跑 `seeds: [0, 1, 42, 3407, 205]` 五个随机种子。下面的“任务数”指实验配置数量；实际 run 数 = 任务数 x 5。如果只是检查流程，使用 `--seed 0 --dry-run`。
 
-| Group | Tasks | Runs | Main purpose |
+| 分组 | 任务数 | 实际 run 数 | 主要补充内容 |
 |---|---:|---:|---|
-| `pc1` | 4 | 20 | Table 4 N/S-scale YOLO11 vs LA-YOLO26 comparison |
-| `pc2` | 2 | 10 | Table 4 M-scale main comparison and LA-YOLO26M checkpoint source |
-| `pc3` | 6 | 30 | Table 5 staged YOLO26M training-mechanism ablations |
-| `pc4` | 8 | 40 | Table 5 LA-YOLO26M/no-AI/module ablations and Table 7 CarCrash transfer |
+| `pc1` | 4 | 20 | 补齐表 4 中 N/S 小模型尺度的 YOLO11 与 LA-YOLO26 对比 |
+| `pc2` | 2 | 10 | 补齐表 4 中 M 尺度主模型对比，并产出后续外部验证常用的 LA-YOLO26M checkpoint |
+| `pc3` | 6 | 30 | 补齐表 5 中 YOLO26M 的阶段式训练机制消融 |
+| `pc4` | 8 | 40 | 补齐表 5 的 LA-YOLO26M/no-AI/模块消融，以及表 7 的 CarCrashDetection 迁移实验 |
 
-`pc1` runs Table 4 N/S-scale comparisons:
+`pc1` 运行表 4 的 N/S 尺度对比实验：
 
-| Experiment | Model/weights | Data | Key settings | Paper role |
+| 实验名 | 模型/权重 | 数据集 | 关键设置 | 论文作用 |
 |---|---|---|---|---|
-| `yolo11n_lkyw` | `weights/yolo11n.pt` | `lkyw` | `SGD`, physical aug, `stal=False`, `prog_loss=False` | YOLO11-N baseline |
-| `yolo11s_lkyw` | `weights/yolo11s.pt` | `lkyw` | `SGD`, physical aug, `stal=False`, `prog_loss=False` | YOLO11-S baseline |
-| `la_yolo26n_full` | `la-yolo26n.yaml` + `yolo26n.pt` | `lkyw` | `MuSGD`, SFGA, physical aug, STAL, ProgLoss, Focal, FirePrior | Full LA-YOLO26-N |
-| `la_yolo26s_full` | `la-yolo26s.yaml` + `yolo26s.pt` | `lkyw` | `MuSGD`, SFGA, physical aug, STAL, ProgLoss, Focal, FirePrior | Full LA-YOLO26-S |
+| `yolo11n_lkyw` | `weights/yolo11n.pt` | `lkyw` | `SGD`，物理增强，`stal=False`，`prog_loss=False` | YOLO11-N 基线 |
+| `yolo11s_lkyw` | `weights/yolo11s.pt` | `lkyw` | `SGD`，物理增强，`stal=False`，`prog_loss=False` | YOLO11-S 基线 |
+| `la_yolo26n_full` | `la-yolo26n.yaml` + `yolo26n.pt` | `lkyw` | `MuSGD`，SFGA，物理增强，STAL，ProgLoss，Focal，FirePrior | LA-YOLO26-N 完整模型 |
+| `la_yolo26s_full` | `la-yolo26s.yaml` + `yolo26s.pt` | `lkyw` | `MuSGD`，SFGA，物理增强，STAL，ProgLoss，Focal，FirePrior | LA-YOLO26-S 完整模型 |
 
-`pc2` runs Table 4 M-scale comparisons:
+`pc1` 补充的是轻量级和小模型尺度实验，用于说明 LA-YOLO26 在较低参数量/计算量下相对 YOLO11 的效果提升。
 
-| Experiment | Model/weights | Data | Key settings | Paper role |
+`pc2` 运行表 4 的 M 尺度主对比实验：
+
+| 实验名 | 模型/权重 | 数据集 | 关键设置 | 论文作用 |
 |---|---|---|---|---|
-| `yolo11m_lkyw` | `weights/yolo11m.pt` | `lkyw` | `SGD`, physical aug, `stal=False`, `prog_loss=False` | YOLO11-M baseline |
-| `la_yolo26m_full` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | `MuSGD`, SFGA, physical aug, STAL, ProgLoss, Focal, FirePrior | Full LA-YOLO26-M |
+| `yolo11m_lkyw` | `weights/yolo11m.pt` | `lkyw` | `SGD`，物理增强，`stal=False`，`prog_loss=False` | YOLO11-M 基线 |
+| `la_yolo26m_full` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | `MuSGD`，SFGA，物理增强，STAL，ProgLoss，Focal，FirePrior | LA-YOLO26-M 完整模型 |
 
-`pc3` runs Table 5 YOLO26M staged ablations:
+`pc2` 补充的是 M 尺度主模型对比。`la_yolo26m_full` 通常也是后续 Ext-VFSmoke 外部验证、可视化和论文主结论最重要的 checkpoint 来源。
 
-| Experiment | Added/changed item | Key settings | Paper role |
+`pc3` 运行表 5 的 YOLO26M 阶段式消融实验：
+
+| 实验名 | 在上一项基础上新增/改变 | 关键设置 | 论文作用 |
 |---|---|---|---|
-| `yolo26m_base` | Base YOLO26M | no physical aug, `SGD`, `stal=False`, `prog_loss=False` | original training baseline |
-| `yolo26m_physical_aug` | physical augmentation | `scale/perspective/shear/mosaic/mixup` | physical augmentation gain |
-| `yolo26m_physical_stal` | STAL | `stal=True`, `prog_loss=False` | small-target assignment gain |
-| `yolo26m_physical_stal_focal` | Focal | `fl_gamma=1.5`, `fl_alpha=0.25` | hard-sample classification gain |
-| `yolo26m_physical_stal_focal_prog` | ProgLoss | `prog_loss=True` | progressive one-to-many/one-to-one schedule gain |
-| `yolo26m_physical_stal_focal_prog_musgd` | MuSGD | `optimizer=MuSGD` | final optimizer gain |
+| `yolo26m_base` | 基础 YOLO26M | 无物理增强，`SGD`，`stal=False`，`prog_loss=False` | 原始训练基线 |
+| `yolo26m_physical_aug` | 加入物理增强 | `scale/perspective/shear/mosaic/mixup` | 验证事故场景物理增强收益 |
+| `yolo26m_physical_stal` | 加入 STAL | `stal=True`，`prog_loss=False` | 验证小目标感知标签分配收益 |
+| `yolo26m_physical_stal_focal` | 加入 Focal | `fl_gamma=1.5`，`fl_alpha=0.25` | 验证难样本分类调制收益 |
+| `yolo26m_physical_stal_focal_prog` | 加入 ProgLoss | `prog_loss=True` | 验证渐进式一对多/一对一损失调度收益 |
+| `yolo26m_physical_stal_focal_prog_musgd` | 优化器改为 MuSGD | `optimizer=MuSGD` | 验证最终优化器设置收益 |
 
-`pc4` runs LA-YOLO26M extended ablations and CarCrashDetection transfer:
+`pc3` 不使用 LA-YOLO26 的 SFGA 结构，重点是把 YOLO26M 上的训练策略逐步拆开，形成“物理增强 -> STAL -> Focal -> ProgLoss -> MuSGD”的阶段式消融链。
 
-| Experiment | Model/weights | Data | Key settings | Paper role |
+`pc4` 运行 LA-YOLO26M 扩展消融和 CarCrashDetection 迁移实验：
+
+| 实验名 | 模型/权重 | 数据集 | 关键设置 | 论文作用 |
 |---|---|---|---|---|
-| `la_yolo26m_sfga_noai` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw_noai` | no AI-assisted training images, SFGA, STAL, ProgLoss, Focal | Table 5 no-AI ablation |
-| `la_yolo26m_full_ablation` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | SFGA, physical aug, STAL, ProgLoss, Focal, FirePrior, MuSGD | Table 5 full LA-YOLO26M item |
-| `la_yolo26m_sfga_only` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | SFGA, physical aug, STAL, ProgLoss, MuSGD, no Focal/FirePrior | SFGA baseline supplement |
-| `la_yolo26m_sfga_focal` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | SFGA plus Focal | Focal single-factor supplement |
-| `la_yolo26m_sfga_fireprior` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | SFGA plus FirePrior | fire/no-fire priority single-factor supplement |
-| `la_yolo26n_carcrash` | `la-yolo26n.yaml` + `yolo26n.pt` | `carcrash` | LA-YOLO26-N on CarCrashDetection | Table 7 N-scale transfer |
-| `la_yolo26s_carcrash` | `la-yolo26s.yaml` + `yolo26s.pt` | `carcrash` | LA-YOLO26-S on CarCrashDetection | Table 7 S-scale transfer |
-| `la_yolo26m_carcrash` | `la-yolo26m.yaml` + `yolo26m.pt` | `carcrash` | LA-YOLO26-M on CarCrashDetection | Table 7 M-scale transfer |
+| `la_yolo26m_sfga_noai` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw_noai` | 去除 AI 辅助训练图，SFGA，STAL，ProgLoss，Focal | 表 5 no-AI 消融，验证 AI 辅助数据贡献 |
+| `la_yolo26m_full_ablation` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | SFGA，物理增强，STAL，ProgLoss，Focal，FirePrior，MuSGD | 表 5 LA-YOLO26M 完整项 |
+| `la_yolo26m_sfga_only` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | SFGA，物理增强，STAL，ProgLoss，MuSGD，不启用 Focal/FirePrior | 补充 SFGA 基础对照 |
+| `la_yolo26m_sfga_focal` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | 在 SFGA 对照上加入 Focal | 补充 Focal 单因素对照 |
+| `la_yolo26m_sfga_fireprior` | `la-yolo26m.yaml` + `yolo26m.pt` | `lkyw` | 在 SFGA 对照上加入 FirePrior | 补充火灾/无火状态优先损失单因素对照 |
+| `la_yolo26n_carcrash` | `la-yolo26n.yaml` + `yolo26n.pt` | `carcrash` | LA-YOLO26-N，CarCrashDetection 两类迁移 | 表 7 N 尺度迁移稳定性 |
+| `la_yolo26s_carcrash` | `la-yolo26s.yaml` + `yolo26s.pt` | `carcrash` | LA-YOLO26-S，CarCrashDetection 两类迁移 | 表 7 S 尺度迁移稳定性 |
+| `la_yolo26m_carcrash` | `la-yolo26m.yaml` + `yolo26m.pt` | `carcrash` | LA-YOLO26-M，CarCrashDetection 两类迁移 | 表 7 M 尺度迁移稳定性 |
 
-Ext-VFSmoke is not a four-machine training job. It is an external validation task after training; populate `datasets/Ext-VFSmoke` first, then run `tools/lkyw_validate.py` for Table 6.
+`pc4` 的前三个模块消融用于补足论文中 SFGA、Focal、FirePrior 的单因素描述；后三个 CarCrash 实验用于证明模型迁移到外部交通事故严重程度数据集时的稳定性。Ext-VFSmoke 不在四台电脑的训练任务中，它是训练完成后的外部验证任务；需要先补齐 `datasets/Ext-VFSmoke` 图像和标签，再用 `tools/lkyw_validate.py` 运行表 6。
 
-### 7. Helper Scripts
+### 7. 新增训练、汇总、外部验证与数据统计脚本
 
-Files:
+文件位置：
 
 ```text
 tools/lkyw_prepare_splits.py
@@ -484,32 +490,32 @@ tools/lkyw_validate.py
 tools/lkyw_dataset_stats.py
 ```
 
-Script roles:
+脚本职责：
 
 ```text
 lkyw_prepare_splits.py
-  Validates LKYWDetection image/label pairing, checks class order, resolves ai_images.txt,
-  and writes train.txt, val.txt, test.txt, train_noai.txt, and lkyw_detection_stats.json.
+  校验 LKYWDetection 的图像/标签配对关系，检查类别顺序，解析 ai_images.txt，
+  并生成 train.txt、val.txt、test.txt、train_noai.txt 和 lkyw_detection_stats.json。
 
 lkyw_run.py
-  Loads paper_full.yaml, selects experiments by --group or --only, resolves portable paths,
-  and calls YOLO(...).train(**train_args).
+  读取 paper_full.yaml，按 --group 或 --only 选择实验，解析可迁移路径，
+  并调用 YOLO(...).train(**train_args) 启动训练。
 
 lkyw_collect_results.py
-  Reads runs/lkyw/*/results.csv, selects the best mAP50-95 row per run,
-  and writes per-run plus mean/std summaries.
+  读取 runs/lkyw/*/results.csv，按 mAP50-95 选择每个 run 的最佳行，
+  生成单次实验结果表和均值/标准差汇总表。
 
 lkyw_validate.py
-  Runs model.val() and computes fire/no-fire state metrics for external datasets.
+  调用 model.val() 进行外部验证，并额外计算火灾/无火状态级指标。
 
 lkyw_dataset_stats.py
-  Counts images, boxes, class distribution, fire boxes, and small fire targets
-  for dataset description placeholders.
+  统计数据集图像数、目标框数、类别分布、火灾目标数和小火灾目标数，
+  用于填充论文中的数据集描述占位符。
 ```
 
-## Quick Check
+## 快速检查
 
-Run from the copied package root:
+在拷贝后的 `LAYOLO26` 根目录运行：
 
 ```powershell
 cd <copied LAYOLO26 path>
@@ -517,9 +523,9 @@ D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_prepare_splits.py --requi
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_run.py --group pc1 --seed 0 --dry-run
 ```
 
-## Four-Machine Run
+## 四台电脑并行训练
 
-Run one command per computer from the copied package root:
+每台电脑进入自己的 `LAYOLO26` 根目录后，只运行对应组命令：
 
 ```powershell
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_run.py --group pc1
@@ -528,36 +534,43 @@ D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_run.py --group pc3
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_run.py --group pc4
 ```
 
-Use `--dry-run` first to inspect resolved jobs without training:
+pc1：4 个任务，20 个 run，补表 4 的 YOLO11 N/S 与 LA-YOLO26 N/S 对比。
+pc2：2 个任务，10 个 run，补表 4 的 M 尺度主对比，并产出后续外部验证常用的 LA-YOLO26M checkpoint。
+pc3：6 个任务，30 个 run，补表 5 的 YOLO26M 阶段式消融：物理增强、STAL、Focal、ProgLoss、MuSGD。
+pc4：8 个任务，40 个 run，补表 5 的 no-AI/LA-YOLO26M/SFGA-Focal-FirePrior 消融，以及表 7 的 CarCrashDetection 迁移实验。
+
+Ext-VFSmoke 不属于四台电脑训练任务，它是训练完成后的表 6 外部验证任务，需要先补齐数据集后用 lkyw_validate.py 跑。
+
+正式训练前建议先 dry-run：
 
 ```powershell
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_run.py --group pc4 --seed 0 --dry-run
 ```
 
-If the copied folder is not the working directory, either run from that folder or pass:
+如果没有在 `LAYOLO26` 根目录运行，也可以显式指定工作目录：
 
 ```powershell
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_run.py --group pc1 --workspace D:/LAYOLO26
 ```
 
-## Result Collection
+## 结果汇总
 
-After all computers finish, copy their `runs/lkyw/*` folders back into one package and run:
+所有电脑训练完成后，将各机器的 `runs/lkyw/*` 结果目录复制回同一个包中，然后运行：
 
 ```powershell
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_collect_results.py --runs runs/lkyw
 ```
 
-Generated summaries:
+输出文件：
 
 ```text
 runs/lkyw/lkyw_per_run_summary.csv
 runs/lkyw/lkyw_mean_std_summary.csv
 ```
 
-## External Validation
+## 外部验证
 
-After Ext-VFSmoke is populated, validate the best checkpoint:
+补齐 Ext-VFSmoke 后，用最优 checkpoint 进行外部验证：
 
 ```powershell
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_validate.py `
@@ -567,7 +580,7 @@ D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_validate.py `
   --out runs/lkyw/ext_vfsmoke_la_yolo26m_seed0.json
 ```
 
-For the smoke subset:
+烟雾遮挡子集验证：
 
 ```powershell
 D:/CondaEnvs/yolov11_traffic_dev/python.exe tools/lkyw_validate.py `
