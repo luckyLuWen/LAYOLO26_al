@@ -11,11 +11,17 @@ __pycache__/
 # Local Ultralytics runtime settings and downloaded assets
 .ultralytics_config/
 
-# Dataset directory skeleton is versioned, but image/label payloads are not.
-# Keep .gitkeep files so empty dataset folders survive in git.
-datasets/CarCrashDetection/
-datasets/LKYWDetection/
-datasets/Ext-VFSmoke/
+# Dataset top-level directories are versioned, but their payloads are not.
+datasets/*
+!datasets/CarCrashDetection/
+!datasets/LKYWDetection/
+!datasets/Ext-VFSmoke/
+datasets/CarCrashDetection/**
+datasets/LKYWDetection/**
+datasets/Ext-VFSmoke/**
+!datasets/CarCrashDetection/.gitkeep
+!datasets/LKYWDetection/.gitkeep
+!datasets/Ext-VFSmoke/.gitkeep
 
 # Pretrained weights, trained checkpoints, and exported model artifacts
 weights/
