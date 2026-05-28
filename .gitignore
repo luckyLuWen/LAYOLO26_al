@@ -1,0 +1,58 @@
+# Runtime/cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Local Ultralytics runtime settings and downloaded assets
+.ultralytics_config/
+
+# Dataset directory skeleton is versioned, but image/label payloads are not.
+# Keep .gitkeep files so empty dataset folders survive in git.
+datasets/CarCrashDetection/
+datasets/LKYWDetection/
+datasets/Ext-VFSmoke/
+
+# Pretrained weights, trained checkpoints, and exported model artifacts
+weights/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.engine
+*.torchscript
+*.tflite
+*.mlpackage/
+*.openvino/
+*_openvino_model/
+*_ncnn_model/
+*_saved_model/
+
+# Training/validation outputs
+runs/
+wandb/
+mlruns/
+*.log
+events.out.tfevents*
+
+# Large generated arrays and caches
+*.npy
+*.npz
+*.cache
+
+# OS/editor metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+~$*

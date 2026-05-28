@@ -1,0 +1,12 @@
+# External complex smoke-fire test set.
+# Use this for table 6 full external validation.
+
+train: ../../datasets/Ext-VFSmoke/images/test
+val: ../../datasets/Ext-VFSmoke/images/test
+test: ../../datasets/Ext-VFSmoke/images/test
+
+names:
+  0: carFire
+  1: carNofire
+  2: lkywFire
+  3: lkywNofire

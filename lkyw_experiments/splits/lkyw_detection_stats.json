@@ -1,0 +1,61 @@
+{
+  "dataset": "datasets/LKYWDetection",
+  "classes": [
+    "carFire",
+    "carNofire",
+    "lkywFire",
+    "lkywNofire"
+  ],
+  "splits": {
+    "train": {
+      "images": 968,
+      "labels": 968,
+      "boxes": 988,
+      "class_counts": {
+        "0": 206,
+        "1": 248,
+        "2": 235,
+        "3": 299
+      },
+      "missing_labels": [],
+      "orphan_labels": [],
+      "empty_labels": [],
+      "bad_labels": []
+    },
+    "val": {
+      "images": 277,
+      "labels": 277,
+      "boxes": 283,
+      "class_counts": {
+        "0": 55,
+        "1": 68,
+        "2": 73,
+        "3": 87
+      },
+      "missing_labels": [],
+      "orphan_labels": [],
+      "empty_labels": [],
+      "bad_labels": []
+    },
+    "test": {
+      "images": 141,
+      "labels": 141,
+      "boxes": 142,
+      "class_counts": {
+        "0": 32,
+        "1": 39,
+        "2": 37,
+        "3": 34
+      },
+      "missing_labels": [],
+      "orphan_labels": [],
+      "empty_labels": [],
+      "bad_labels": []
+    }
+  },
+  "ai_train_images": 147,
+  "train_noai_images": 821,
+  "total_images": 1386,
+  "total_boxes": 1413,
+  "errors": []
+}

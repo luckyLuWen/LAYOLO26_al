@@ -1,0 +1,12 @@
+# Smoke-occlusion subset of Ext-VFSmoke.
+# Use this to compute the smoke-occlusion subset recall in table 6.
+
+train: ../../datasets/Ext-VFSmoke/images/smoke
+val: ../../datasets/Ext-VFSmoke/images/smoke
+test: ../../datasets/Ext-VFSmoke/images/smoke
+
+names:
+  0: carFire
+  1: carNofire
+  2: lkywFire
+  3: lkywNofire

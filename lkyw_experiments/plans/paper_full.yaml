@@ -1,0 +1,292 @@
+# Full experiment plan for the LKYWDetection / LA-YOLO26 paper.
+# Run subsets with:
+#   python tools/lkyw_run.py --plan lkyw_experiments/plans/paper_full.yaml --group pc1
+
+workspace: "{repo}"
+weights_dir: "{workspace}/weights"
+project: "{workspace}/runs/lkyw"
+
+data:
+  lkyw: "{repo}/lkyw_experiments/datasets/lkyw.yaml"
+  lkyw_noai: "{repo}/lkyw_experiments/datasets/lkyw_noai.yaml"
+  ext_vfsmoke: "{repo}/lkyw_experiments/datasets/ext_vfsmoke.yaml"
+  ext_vfsmoke_smoke: "{repo}/lkyw_experiments/datasets/ext_vfsmoke_smoke.yaml"
+  carcrash: "{repo}/lkyw_experiments/datasets/carcrash.yaml"
+
+seeds: [0, 1, 42, 3407, 205]
+
+train_defaults:
+  epochs: 300
+  patience: 50
+  imgsz: 640
+  batch: 16
+  device: 0
+  workers: 8
+  lr0: 0.01
+  lrf: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+  cos_lr: True
+  warmup_epochs: 5.0
+  close_mosaic: 10
+  box: 9.0
+  cls: 0.5
+  dfl: 2.0
+  fl_gamma: 0.0
+  fl_alpha: 0.25
+  fire_prior: 0.0
+  fire_class_ids: ""
+  nofire_class_ids: ""
+  cls_pw: 0.0
+  plots: True
+  deterministic: True
+
+physical_aug:
+  scale: 0.9
+  perspective: 0.001
+  shear: 0.1
+  mosaic: 1.0
+  mixup: 0.15
+
+no_physical_aug:
+  scale: 0.5
+  perspective: 0.0
+  shear: 0.0
+  mosaic: 1.0
+  mixup: 0.0
+
+full_loss:
+  fl_gamma: 1.5
+  fl_alpha: 0.25
+  fire_prior: 0.20
+  fire_class_ids: "0,2"
+  nofire_class_ids: "1,3"
+
+experiments:
+  # Table 4: LKYWDetection YOLO11 vs full LA-YOLO26, N/S/M.
+  - name: yolo11n_lkyw
+    groups: [pc1, table4, yolo11]
+    model: "{weights_dir}/yolo11n.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: False
+      prog_loss: False
+      inherit: [physical_aug]
+
+  - name: yolo11s_lkyw
+    groups: [pc1, table4, yolo11]
+    model: "{weights_dir}/yolo11s.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: False
+      prog_loss: False
+      inherit: [physical_aug]
+
+  - name: yolo11m_lkyw
+    groups: [pc2, table4, yolo11]
+    model: "{weights_dir}/yolo11m.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: False
+      prog_loss: False
+      inherit: [physical_aug]
+
+  - name: la_yolo26n_full
+    groups: [pc1, table4, la_full]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26n.yaml"
+    pretrained: "{weights_dir}/yolo26n.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug, full_loss]
+
+  - name: la_yolo26s_full
+    groups: [pc1, table4, la_full]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26s.yaml"
+    pretrained: "{weights_dir}/yolo26s.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug, full_loss]
+
+  - name: la_yolo26m_full
+    groups: [pc2, table4, la_full]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug, full_loss]
+
+  # Table 5: staged ablation on YOLO26M and LA-YOLO26M.
+  - name: yolo26m_base
+    groups: [pc3, table5, ablation]
+    model: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: False
+      prog_loss: False
+      inherit: [no_physical_aug]
+
+  - name: yolo26m_physical_aug
+    groups: [pc3, table5, ablation]
+    model: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: False
+      prog_loss: False
+      inherit: [physical_aug]
+
+  - name: yolo26m_physical_stal
+    groups: [pc3, table5, ablation]
+    model: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: True
+      prog_loss: False
+      inherit: [physical_aug]
+
+  - name: yolo26m_physical_stal_focal
+    groups: [pc3, table5, ablation]
+    model: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: True
+      prog_loss: False
+      fl_gamma: 1.5
+      fl_alpha: 0.25
+      inherit: [physical_aug]
+
+  - name: yolo26m_physical_stal_focal_prog
+    groups: [pc3, table5, ablation]
+    model: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: SGD
+      stal: True
+      prog_loss: True
+      fl_gamma: 1.5
+      fl_alpha: 0.25
+      inherit: [physical_aug]
+
+  - name: yolo26m_physical_stal_focal_prog_musgd
+    groups: [pc3, table5, ablation]
+    model: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      fl_gamma: 1.5
+      fl_alpha: 0.25
+      inherit: [physical_aug]
+
+  - name: la_yolo26m_sfga_noai
+    groups: [pc4, table5, ablation, noai]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: lkyw_noai
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      fl_gamma: 1.5
+      fl_alpha: 0.25
+      inherit: [physical_aug]
+
+  - name: la_yolo26m_full_ablation
+    groups: [pc4, table5, ablation, la_full]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug, full_loss]
+
+  # MD-specific compact ablations for SFGA/Focal/FirePrior wording.
+  - name: la_yolo26m_sfga_only
+    groups: [pc4, md_ablation]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug]
+
+  - name: la_yolo26m_sfga_focal
+    groups: [pc4, md_ablation]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      fl_gamma: 1.5
+      fl_alpha: 0.25
+      inherit: [physical_aug]
+
+  - name: la_yolo26m_sfga_fireprior
+    groups: [pc4, md_ablation]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: lkyw
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      fire_prior: 0.20
+      fire_class_ids: "0,2"
+      nofire_class_ids: "1,3"
+      inherit: [physical_aug]
+
+  # Table 7: CarCrashDetection transfer stability.
+  - name: la_yolo26n_carcrash
+    groups: [pc4, table7, carcrash]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26n.yaml"
+    pretrained: "{weights_dir}/yolo26n.pt"
+    data: carcrash
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug]
+
+  - name: la_yolo26s_carcrash
+    groups: [pc4, table7, carcrash]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26s.yaml"
+    pretrained: "{weights_dir}/yolo26s.pt"
+    data: carcrash
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug]
+
+  - name: la_yolo26m_carcrash
+    groups: [pc4, table7, carcrash]
+    model: "{repo}/ultralytics/cfg/models/26/la-yolo26m.yaml"
+    pretrained: "{weights_dir}/yolo26m.pt"
+    data: carcrash
+    params:
+      optimizer: MuSGD
+      stal: True
+      prog_loss: True
+      inherit: [physical_aug]

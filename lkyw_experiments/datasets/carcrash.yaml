@@ -1,0 +1,10 @@
+# CarCrashDetection transfer test.
+# The LA-YOLO26 model YAML nc is overridden automatically by this dataset's 2 classes.
+
+train: ../../datasets/CarCrashDetection/train/images
+val: ../../datasets/CarCrashDetection/valid/images
+test: ../../datasets/CarCrashDetection/test/images
+
+names:
+  0: moderate
+  1: severe

@@ -1,0 +1,18 @@
+# LKYWDetection 4-class dataset.
+# Expected layout:
+#   <repo>/datasets/LKYWDetection/images/train
+#   <repo>/datasets/LKYWDetection/images/val
+#   <repo>/datasets/LKYWDetection/images/test
+#   <repo>/datasets/LKYWDetection/labels/train
+#   <repo>/datasets/LKYWDetection/labels/val
+#   <repo>/datasets/LKYWDetection/labels/test
+
+train: ../../datasets/LKYWDetection/images/train
+val: ../../datasets/LKYWDetection/images/val
+test: ../../datasets/LKYWDetection/images/test
+
+names:
+  0: carFire
+  1: carNofire
+  2: lkywFire
+  3: lkywNofire

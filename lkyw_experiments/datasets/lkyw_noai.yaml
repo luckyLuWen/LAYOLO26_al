@@ -1,0 +1,12 @@
+# LKYWDetection without AI-assisted training images.
+# Run tools/lkyw_prepare_splits.py after filling lkyw_experiments/manifests/ai_images.txt.
+
+train: ../splits/train_noai.txt
+val: ../../datasets/LKYWDetection/images/val
+test: ../../datasets/LKYWDetection/images/test
+
+names:
+  0: carFire
+  1: carNofire
+  2: lkywFire
+  3: lkywNofire
