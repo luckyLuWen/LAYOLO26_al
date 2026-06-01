@@ -7,6 +7,7 @@ import csv
 import json
 import os
 import sys
+import warnings
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
@@ -70,6 +71,32 @@ def check_weight(path: str, label: str) -> None:
         raise FileNotFoundError(f"{label} not found: {path}")
 
 
+def checkpoint_resume_state(path: Path) -> str:
+    """Return whether a YOLO checkpoint can be used for resume."""
+    if not path.exists():
+        return "missing"
+    try:
+        import torch
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", FutureWarning)
+            ckpt = torch.load(path, map_location="cpu")
+    except Exception:
+        return "unreadable"
+    if not isinstance(ckpt, dict):
+        return "unreadable"
+
+    try:
+        epoch = int(ckpt.get("epoch", -1))
+    except (TypeError, ValueError):
+        epoch = -1
+    if epoch >= 0 and ckpt.get("optimizer") is not None:
+        return "resumable"
+    if "model" in ckpt:
+        return "finalized"
+    return "unreadable"
+
+
 def last_epoch(results_csv: Path) -> int | None:
     if not results_csv.exists():
         return None
@@ -88,10 +115,13 @@ def is_complete_run(run_dir: Path, epochs: int | None) -> bool:
     if (run_dir / ".lkyw_complete.json").exists():
         return True
 
+    last_pt = run_dir / "weights" / "last.pt"
     weights_ok = (run_dir / "weights" / "best.pt").exists() and (run_dir / "weights" / "last.pt").exists()
     results_ok = (run_dir / "results.csv").exists()
     final_plots_ok = (run_dir / "results.png").exists() or (run_dir / "confusion_matrix.png").exists()
     if weights_ok and results_ok and final_plots_ok:
+        return True
+    if results_ok and checkpoint_resume_state(last_pt) == "finalized":
         return True
 
     end_epoch = last_epoch(run_dir / "results.csv")
@@ -179,13 +209,21 @@ def main() -> None:
 
         complete = is_complete_run(run_dir, train_args.get("epochs")) if run_dir.exists() else False
         resume_path = run_dir / "weights" / "last.pt"
+        resume_state = checkpoint_resume_state(resume_path) if run_dir.exists() else "missing"
 
         if args.dry_run:
             status = "new"
             if complete and not args.no_skip_existing and not args.exist_ok:
                 status = "complete, will skip"
-            elif run_dir.exists() and resume_path.exists() and not args.no_resume_existing and not args.exist_ok:
+            elif (
+                run_dir.exists()
+                and resume_state == "resumable"
+                and not args.no_resume_existing
+                and not args.exist_ok
+            ):
                 status = f"incomplete, will resume from {resume_path.as_posix()}"
+            elif run_dir.exists() and resume_path.exists() and resume_state != "resumable":
+                status = f"exists, last.pt is {resume_state}, will skip"
             elif run_dir.exists():
                 status = "exists"
             print(f"[DRY] {train_args['name']} ({status})")
@@ -199,11 +237,17 @@ def main() -> None:
             if complete and not args.no_skip_existing:
                 print(f"[SKIP] {train_args['name']} already complete: {run_dir}")
                 continue
-            if resume_path.exists() and not args.no_resume_existing:
+            if resume_state == "resumable" and not args.no_resume_existing:
                 print(f"[RESUME] {train_args['name']} from {resume_path}")
                 model_path = resume_path.as_posix()
-                train_args["resume"] = True
+                train_args["resume"] = resume_path.as_posix()
                 train_args.pop("pretrained", None)
+            elif resume_path.exists() and not args.no_resume_existing:
+                print(
+                    f"[SKIP] {train_args['name']} exists, but weights/last.pt is {resume_state} and cannot resume. "
+                    "Use --exist-ok only if you intentionally want to start a new run in this folder."
+                )
+                continue
             else:
                 print(
                     f"[SKIP] {train_args['name']} exists but is not complete and has no weights/last.pt. "
