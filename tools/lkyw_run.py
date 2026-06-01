@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import json
 import os
 import sys
 from copy import deepcopy
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +70,44 @@ def check_weight(path: str, label: str) -> None:
         raise FileNotFoundError(f"{label} not found: {path}")
 
 
+def last_epoch(results_csv: Path) -> int | None:
+    if not results_csv.exists():
+        return None
+    with results_csv.open("r", encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+    if not rows:
+        return None
+    value = (rows[-1].get("epoch") or "").strip()
+    try:
+        return int(float(value))
+    except ValueError:
+        return None
+
+
+def is_complete_run(run_dir: Path, epochs: int | None) -> bool:
+    if (run_dir / ".lkyw_complete.json").exists():
+        return True
+
+    weights_ok = (run_dir / "weights" / "best.pt").exists() and (run_dir / "weights" / "last.pt").exists()
+    results_ok = (run_dir / "results.csv").exists()
+    final_plots_ok = (run_dir / "results.png").exists() or (run_dir / "confusion_matrix.png").exists()
+    if weights_ok and results_ok and final_plots_ok:
+        return True
+
+    end_epoch = last_epoch(run_dir / "results.csv")
+    return bool(weights_ok and epochs and end_epoch is not None and end_epoch >= epochs)
+
+
+def write_complete_marker(run_dir: Path, exp_name: str, seed: int, train_args: dict[str, Any]) -> None:
+    marker = {
+        "experiment": exp_name,
+        "seed": seed,
+        "epochs": train_args.get("epochs"),
+        "completed_at": datetime.now().isoformat(timespec="seconds"),
+    }
+    (run_dir / ".lkyw_complete.json").write_text(json.dumps(marker, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def iter_jobs(plan: dict[str, Any], args: argparse.Namespace):
     groups = set(args.group or [])
     only = set(args.only or [])
@@ -94,6 +135,8 @@ def main() -> None:
     parser.add_argument("--batch", type=int, help="Override batch size.")
     parser.add_argument("--workers", type=int, help="Override dataloader workers.")
     parser.add_argument("--exist-ok", action="store_true", help="Allow overwriting existing run names.")
+    parser.add_argument("--no-skip-existing", action="store_true", help="Do not skip runs detected as complete.")
+    parser.add_argument("--no-resume-existing", action="store_true", help="Do not resume incomplete runs from weights/last.pt.")
     parser.add_argument("--dry-run", action="store_true", help="Print resolved jobs without training.")
     args = parser.parse_args()
 
@@ -122,6 +165,7 @@ def main() -> None:
         train_args["name"] = f"{exp['name']}_seed{seed}"
         train_args["seed"] = seed
         train_args["exist_ok"] = args.exist_ok
+        run_dir = Path(train_args["project"]) / train_args["name"]
 
         for key in ("device", "epochs", "batch", "workers"):
             value = getattr(args, key)
@@ -133,18 +177,45 @@ def main() -> None:
         if pretrained:
             train_args["pretrained"] = pretrained
 
+        complete = is_complete_run(run_dir, train_args.get("epochs")) if run_dir.exists() else False
+        resume_path = run_dir / "weights" / "last.pt"
+
         if args.dry_run:
-            print(f"[DRY] {train_args['name']}")
+            status = "new"
+            if complete and not args.no_skip_existing and not args.exist_ok:
+                status = "complete, will skip"
+            elif run_dir.exists() and resume_path.exists() and not args.no_resume_existing and not args.exist_ok:
+                status = f"incomplete, will resume from {resume_path.as_posix()}"
+            elif run_dir.exists():
+                status = "exists"
+            print(f"[DRY] {train_args['name']} ({status})")
             print(f"      model={model_path}")
             if pretrained:
                 print(f"      pretrained={pretrained}")
             print(f"      data={train_args['data']}")
             continue
 
+        if run_dir.exists() and not args.exist_ok:
+            if complete and not args.no_skip_existing:
+                print(f"[SKIP] {train_args['name']} already complete: {run_dir}")
+                continue
+            if resume_path.exists() and not args.no_resume_existing:
+                print(f"[RESUME] {train_args['name']} from {resume_path}")
+                model_path = resume_path.as_posix()
+                train_args["resume"] = True
+                train_args.pop("pretrained", None)
+            else:
+                print(
+                    f"[SKIP] {train_args['name']} exists but is not complete and has no weights/last.pt. "
+                    "Inspect the run folder or pass --exist-ok intentionally."
+                )
+                continue
+
         check_weight(model_path, "model")
-        if pretrained:
-            check_weight(pretrained, "pretrained")
+        if train_args.get("pretrained"):
+            check_weight(str(train_args["pretrained"]), "pretrained")
         YOLO(model_path).train(**train_args)
+        write_complete_marker(run_dir, exp["name"], seed, train_args)
 
 
 if __name__ == "__main__":
