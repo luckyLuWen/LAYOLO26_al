@@ -1,0 +1,45 @@
+第一组：我们如何一步步提升，提出我们的模型
+----------------
+消融基线base:
+no ProgLoss
+no STAL
+SDG
+
+base
+ base + 物理增强（ok）
+ base + 物理增强 + ProgLoss（ok？）
+ base + 物理增强 + ProgLoss +STAL（ok）
+ base + 物理增强 + STAL + SFGA 
+
+
+
+full ablation == LA-YOLO26
+xx
+
+
+
+STAL确实有用
+我们提
+
+
+---
+第二组对比：和别人成果比
+YOLO11 m ultralytic
+
+对比
+
+原始YOLO26 m ultralytic
+ProgLoss+STAL+MuSDG（改了之后 有效 SDG ok）
+
+对比
+LA-YOLO26 m
+
+结论：
+肯定好
+
+----
+第三组：证明泛化
+
+烟雾干扰
+
+CarCrash

@@ -1,0 +1,142 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="实验设计-审稿回复" id="reviewer-response">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 标题 -->
+        <mxCell id="title" value="审稿意见 → 实验设计方案回复" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="15" width="500" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 问题1：消融实验不足 ===== -->
+        <mxCell id="left-bg-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="70" width="380" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="left-label-1" value="审稿意见 ①" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="78" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="left-text-1" value="&lt;b&gt;消融实验不足&lt;/b&gt;，不知道&lt;br&gt;性能提升具体来自哪个模块，&lt;br&gt;无法证明各组件独立贡献" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="50" y="108" width="340" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-1" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#B0BEC5;strokeColor=#607D8B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="105" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="right-bg-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="500" y="70" width="370" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="right-label-1" value="解决方案 ①" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="78" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="right-text-1" value="&lt;b&gt;构建阶段式消融实验&lt;/b&gt;，逐步叠加模块：&lt;br&gt;Base → +物理增强 → +ProgLoss&lt;br&gt;→ +STAL → +SFGA → &lt;b&gt;LA-YOLO26&lt;/b&gt;&lt;br&gt;每一步验证单个模块的独立贡献" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="108" width="340" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 问题2：方法创新性 ===== -->
+        <mxCell id="left-bg-2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="380" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="left-label-2" value="审稿意见 ②" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="223" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="left-text-2" value="&lt;b&gt;方法创新性不足&lt;/b&gt;，论文缺少&lt;br&gt;新模块/新理论的充分论证" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="50" y="253" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-2" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#B0BEC5;strokeColor=#607D8B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="245" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="right-bg-2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="500" y="215" width="370" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="right-label-2" value="解决方案 ②" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="223" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="right-text-2" value="提出 &lt;b&gt;ProgLoss + STAL + SFGA&lt;/b&gt; 组合创新，&lt;br&gt;并通过消融实验证明每个模块的必要性，&lt;br&gt;补充理论分析和可视化解释" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="253" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 问题3：缺少SOTA对比 ===== -->
+        <mxCell id="left-bg-3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="340" width="380" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="left-label-3" value="审稿意见 ③" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="348" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="left-text-3" value="&lt;b&gt;缺乏与SOTA方法的系统对比&lt;/b&gt;，&lt;br&gt;无法证明相对于已有工作的优势" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="50" y="378" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-3" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#B0BEC5;strokeColor=#607D8B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="370" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="right-bg-3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="500" y="340" width="370" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="right-label-3" value="解决方案 ③" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="348" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="right-text-3" value="增加 &lt;b&gt;SOTA对比实验组&lt;/b&gt;：&lt;br&gt;YOLO11 m → YOLO26 m → YOLO26+改进模块&lt;br&gt;→ &lt;b&gt;LA-YOLO26 m&lt;/b&gt;，逐步证明每个改进有效" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="378" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 问题4：泛化验证 ===== -->
+        <mxCell id="left-bg-4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#E53935;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="465" width="380" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="left-label-4" value="审稿意见 ④" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="473" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="left-text-4" value="&lt;b&gt;无法验证泛化能力&lt;/b&gt;，论文强调&lt;br&gt;复杂视觉干扰但缺少跨场景测试" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="50" y="503" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow-4" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#B0BEC5;strokeColor=#607D8B;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="495" width="70" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="right-bg-4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="500" y="465" width="370" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="right-label-4" value="解决方案 ④" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="473" width="80" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="right-text-4" value="增加 &lt;b&gt;泛化实验组&lt;/b&gt;：&lt;br&gt;① &lt;b&gt;烟雾干扰&lt;/b&gt;场景 ② &lt;b&gt;CarCrash&lt;/b&gt;交通事故场景&lt;br&gt;证明 LA-YOLO26 跨场景鲁棒性" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="503" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 底部：三组实验总览 ===== -->
+        <mxCell id="summary-bg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1E88E5;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="600" width="700" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="summary-label" value="三组实验完整证据链" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E88E5;strokeColor=none;fontSize=13;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="608" width="130" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="summary-boxes" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="120" y="640" width="660" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sum1" value="第一组：消融实验 → 内部有效性" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#4CAF50;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="130" y="642" width="180" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="sum-plus1" value="+" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontStyle=1;fontColor=#616161;" vertex="1" parent="1">
+          <mxGeometry x="315" y="642" width="20" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="sum2" value="第二组：SOTA对比 → 外部竞争力" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1E88E5;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="642" width="180" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="sum-plus2" value="+" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontStyle=1;fontColor=#616161;" vertex="1" parent="1">
+          <mxGeometry x="525" y="642" width="20" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="sum3" value="第三组：泛化实验 → 实际部署价值" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#FB8C00;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="642" width="200" height="26" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

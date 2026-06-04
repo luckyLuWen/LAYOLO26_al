@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="第 1 页" id="nDJhwcCIaF-_u2Q97_aj">
+    <mxGraphModel dx="1304" dy="749" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-dKI6TxdPOREWlztocCi-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="330" width="280" x="74" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="没有做使用AI图片的消融实验，无法证明作用的数据会提升性能" vertex="1">
+          <mxGeometry height="50" width="230" x="100" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="方法创新性不足，论文缺少新模块新理论" vertex="1">
+          <mxGeometry height="50" width="230" x="100" y="312" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="消融实验不足，不知道提升具体来自哪个模块" vertex="1">
+          <mxGeometry height="50" width="230" x="100" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="无法验证论文强调的复杂视觉干扰泛化能力" vertex="1">
+          <mxGeometry height="50" width="230" x="100" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="330" width="280" x="430" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="AI图片消融实验" vertex="1">
+          <mxGeometry height="50" width="230" x="456" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="物理增强+SFGA+SGD" vertex="1">
+          <mxGeometry height="50" width="230" x="456" y="312" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="构建阶段式消融实验" vertex="1">
+          <mxGeometry height="50" width="230" x="456" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;" value="烟雾干扰数据标注" vertex="1">
+          <mxGeometry height="50" width="230" x="456" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-13" parent="1" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="45" width="110" x="340" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-14" parent="1" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="45" width="110" x="340" y="312" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-15" parent="1" style="shape=singleArrow;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="45" width="110" x="340" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="-dKI6TxdPOREWlztocCi-16" parent="1" style="shape=singleArrow;whiteSpace=wrap;html=1;dashed=1;strokeWidth=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="45" width="110" x="340" y="470" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
